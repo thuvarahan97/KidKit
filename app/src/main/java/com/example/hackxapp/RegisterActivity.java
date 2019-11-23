@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
@@ -39,8 +40,8 @@ public class RegisterActivity extends AppCompatActivity implements Validator.Val
     private String districtName;
     private String genderName;
 
-    @NotEmpty
-    EditText etNic;
+//    @NotEmpty
+//    EditText etNic;
 
     @NotEmpty
     EditText etFirstName;
@@ -56,7 +57,7 @@ public class RegisterActivity extends AppCompatActivity implements Validator.Val
     @Max(value = 150, message = "Should be less than 150")
     EditText etAge;
 
-    Spinner spDistrict;
+//    Spinner spDistrict;
 
     @NotEmpty
     EditText etTelephone;
@@ -73,51 +74,57 @@ public class RegisterActivity extends AppCompatActivity implements Validator.Val
     @ConfirmPassword
     EditText etCPassword;
 
-    @NotEmpty
-    EditText etVerification;
+//    @NotEmpty
+//    EditText etVerification;
 
     Button bRegister;
 
     private Validator validator;
+
+    TextView loginLink;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        etNic = findViewById(R.id.etNic);
+        getWindow().setBackgroundDrawableResource(R.drawable.screen_bg2);
+
+//        etNic = findViewById(R.id.etNic);
         etFirstName = findViewById(R.id.etFirstName);
         etLastName = findViewById(R.id.etLastName);
         spGender = findViewById(R.id.spGender);
         etAge = findViewById(R.id.etAge);
-        spDistrict = findViewById(R.id.spDistrict);
+//        spDistrict = findViewById(R.id.spDistrict);
         etTelephone = findViewById(R.id.etTelephone);
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
         etCPassword = findViewById(R.id.etCPassword);
-        etVerification = findViewById(R.id.etVerification);
+//        etVerification = findViewById(R.id.etVerification);
         bRegister = findViewById(R.id.bRegister);
+
+        loginLink = findViewById(R.id.tvSignIn);
 
         validator = new Validator(this);
         validator.setValidationListener(this);
 
-        districtName = "";
+//        districtName = "";
         genderName = "";
 
-        ArrayAdapter<CharSequence> adapterDistricts = ArrayAdapter.createFromResource(this, R.array.districts, R.layout.spinner_item);
-        adapterDistricts.setDropDownViewResource(android.R.layout.select_dialog_singlechoice);
-        spDistrict.setAdapter(adapterDistricts);
-        spDistrict.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                districtName = adapterView.getItemAtPosition(i).toString();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                districtName = adapterView.getItemAtPosition(0).toString();
-            }
-        });
+//        ArrayAdapter<CharSequence> adapterDistricts = ArrayAdapter.createFromResource(this, R.array.districts, R.layout.spinner_item);
+//        adapterDistricts.setDropDownViewResource(android.R.layout.select_dialog_singlechoice);
+//        spDistrict.setAdapter(adapterDistricts);
+//        spDistrict.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+//                districtName = adapterView.getItemAtPosition(i).toString();
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//                districtName = adapterView.getItemAtPosition(0).toString();
+//            }
+//        });
 
         ArrayAdapter<CharSequence> adapterGender = ArrayAdapter.createFromResource(this, R.array.gender, R.layout.spinner_item);
         adapterGender.setDropDownViewResource(android.R.layout.select_dialog_singlechoice);
@@ -140,21 +147,34 @@ public class RegisterActivity extends AppCompatActivity implements Validator.Val
                 validator.validate();
             }
         });
+
+        loginLink.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent loginIntent = new Intent(RegisterActivity.this, LoginActivity.class);
+                loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                loginIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                RegisterActivity.this.startActivity(loginIntent);
+            }
+        });
     }
 
     @Override
     public void onValidationSucceeded() {
-        final String nic = etNic.getText().toString();
+//        final String nic = etNic.getText().toString();
+        final String nic = "";
         final String firstname = etFirstName.getText().toString();
         final String lastname = etLastName.getText().toString();
         final String gender = genderName;
         final String age = etAge.getText().toString();
-        final String district = districtName;
+//        final String district = districtName;
+        final String district = "";
         final String telephone = etTelephone.getText().toString();
         final String email = etEmail.getText().toString();
         final String password = etPassword.getText().toString();
         final String c_password = etCPassword.getText().toString();
-        final String code = etVerification.getText().toString();
+//        final String code = etVerification.getText().toString();
+        final String code = "";
 
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
@@ -166,6 +186,8 @@ public class RegisterActivity extends AppCompatActivity implements Validator.Val
                     switch (success) {
                         case "1":
                             Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             RegisterActivity.this.startActivity(intent);
                             Toast.makeText(RegisterActivity.this,"Successfully Registered!",Toast.LENGTH_SHORT).show();
                             break;

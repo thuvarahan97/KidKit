@@ -5,5 +5,5 @@
     android:layout_height="wrap_content"
     android:fontFamily="sans-serif-light"
     android:textSize="18dp"
-    android:textColor="@color/black"
-    android:textColorHint="@color/black"/>
+    android:textColor="@color/colorPrimary"
+    android:textColorHint="@color/colorPrimary"/>

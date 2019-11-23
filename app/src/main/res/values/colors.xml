@@ -2,11 +2,12 @@
 <resources>
     <color name="colorPrimary">#700700</color>
     <color name="colorPrimaryDark">#450500</color>
-    <color name="colorAccent">#000000</color>
+    <color name="colorAccent">#450500</color>
     <color name="white">#FFFFFF</color>
     <color name="transparent">#00000000</color>
     <color name="gradStart">#450500</color>
     <color name="gradEnd">#bd0e00</color>
     <color name="black">#000000</color>
     <color name="yellow">#FFFF00</color>
+    <color name="grey">#e3e3e3</color>
 </resources>

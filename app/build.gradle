@@ -41,4 +41,5 @@ dependencies {
     implementation 'com.mobsandgeeks:android-saripaar:2.0.3'
     implementation 'com.synnapps:carouselview:0.1.5'
     implementation 'com.felipecsl:gifimageview:2.1.0'
+    implementation 'androidx.cardview:cardview:1.0.0'
 }

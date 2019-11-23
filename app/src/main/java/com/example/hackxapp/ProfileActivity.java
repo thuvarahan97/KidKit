@@ -41,7 +41,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    private EditText name, email;
+    private TextView name, email;
     private Button btn_photo_upload;
     private static final String TAG = ProfileActivity.class.getSimpleName();    //getting the info
     SessionManager sessionManager;
@@ -51,6 +51,7 @@ public class ProfileActivity extends AppCompatActivity {
     private Bitmap bitmap;
     CircleImageView profile_image;
     String strImage;
+    Button bLogout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +68,8 @@ public class ProfileActivity extends AppCompatActivity {
         name = findViewById(R.id.name);
         email = findViewById(R.id.email);
 
+        bLogout = findViewById(R.id.bLogout);
+
         HashMap<String, String> user = sessionManager.getUserDetail();
         getID = user.get(sessionManager.ID);
 
@@ -74,6 +77,14 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 chooseFile();
+            }
+        });
+
+        bLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            sessionManager.logout();
+            Toast.makeText(ProfileActivity.this,"Successfully Logged Out!",Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -125,6 +136,7 @@ public class ProfileActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        Picasso.get().load(R.drawable.profile_photo).into(profile_image);
                         Toast.makeText(ProfileActivity.this, "Error Reading Detail!", Toast.LENGTH_SHORT).show();
                     }
                 })
@@ -145,13 +157,13 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         getUserDetail();
-        name.setFocusableInTouchMode(false);
-        email.setFocusableInTouchMode(false);
+//        name.setFocusableInTouchMode(false);
+//        email.setFocusableInTouchMode(false);
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
     private void chooseFile() {
@@ -193,6 +205,7 @@ public class ProfileActivity extends AppCompatActivity {
                                 String success = jsonObject.getString("success");
 
                                 if (success.equals("1")){
+                                    getUserDetail();
                                     Toast.makeText(ProfileActivity.this, "Successfully Uploaded!", Toast.LENGTH_SHORT).show();
                                 }
                             } catch (JSONException e) {

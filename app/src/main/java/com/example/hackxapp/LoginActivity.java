@@ -3,8 +3,11 @@ package com.example.hackxapp;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -44,6 +47,8 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        getWindow().setBackgroundDrawableResource(R.drawable.screen_bg2);
 
         sessionManager = new SessionManager(this);
 
@@ -88,7 +93,23 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
             mCheckBoxRememberMe.setChecked(b);
         }
 
+//        if (isNetwork(getApplicationContext())){
+//            Toast.makeText(getApplicationContext(), "Internet Connected", Toast.LENGTH_SHORT).show();
+//        } else {
+//            Toast.makeText(getApplicationContext(), "Internet Disconnected", Toast.LENGTH_SHORT).show();
+//        }
+
     }
+
+//    public boolean isNetwork(Context context) {
+//        ConnectivityManager cm = (ConnectivityManager) context
+//                .getSystemService(Context.CONNECTIVITY_SERVICE);
+//        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+//        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+//            return true;
+//        }
+//        return false;
+//    }
 
     @Override
     public void onValidationSucceeded() {
@@ -102,7 +123,7 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
                     String success = jsonResponse.getString("success");
 
                     switch (success) {
-                        case "1":
+                        case "1": {
                             String name = jsonResponse.getString("name").trim();
                             String email = jsonResponse.getString("email").trim();
                             String id = jsonResponse.getString("id").trim();
@@ -125,9 +146,13 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
                             intent.putExtra("name", name);
                             intent.putExtra("email", email);
 
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
                             LoginActivity.this.startActivity(intent);
                             Toast.makeText(LoginActivity.this, "Successfully Logged In!", Toast.LENGTH_SHORT).show();
                             break;
+                        }
                         case "2": {
                             AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
                             builder.setMessage("Incorrect Password!")

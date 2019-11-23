@@ -90,6 +90,9 @@ public class GraphActivity extends AppCompatActivity {
     DatabaseReference reference;
     DatabaseReference parent;
 
+    Button btn_function;
+    int btn_function_step;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +115,7 @@ public class GraphActivity extends AppCompatActivity {
         setUiEnabled(false);
 
         textView.setMovementMethod(new ScrollingMovementMethod());
+        textView.setEnabled(true);
 
 //        graphView = findViewById(R.id.graph);
 //        series = new LineGraphSeries();
@@ -135,6 +139,9 @@ public class GraphActivity extends AppCompatActivity {
         chronometer = findViewById(R.id.chronometer);
 
         //setListeners();
+
+        btn_function = findViewById(R.id.buttonFunction);
+        btn_function_step = 1;
 
     }
 
@@ -208,7 +215,7 @@ public class GraphActivity extends AppCompatActivity {
                 textView.setEnabled(true);
                 deviceConnected = true;
                 beginListenForData();
-                textView.append("\nConnection Opened!\n");
+                textView.append("\n--> Connection Opened!\n");
             } else {
                 Toast.makeText(getApplicationContext(), "Unable to Connect!", Toast.LENGTH_SHORT).show();
             }
@@ -272,7 +279,7 @@ public class GraphActivity extends AppCompatActivity {
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
-        textView.append("\nReading Started!\n");
+        textView.append("\n--> Reading Started!\n");
 
         sendButton.setEnabled(false);
         stopButton.setEnabled(true);
@@ -341,7 +348,7 @@ public class GraphActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        textView.append("\nReading Stopped!\n");
+        textView.append("\n--> Reading Stopped!\n");
 
         stopThread = true;
 
@@ -367,7 +374,7 @@ public class GraphActivity extends AppCompatActivity {
 
     public void onClickResult(View view) {
         if (finalResult.equals("0")) {
-            textView.append("\nWaiting for the results...\n");
+            textView.append("\n--> Waiting for the results...\n");
         } else {
 //            beginListenForData();
 //            String string = finalResult;
@@ -455,5 +462,106 @@ public class GraphActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         finish();
+    }
+
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
+    public void onClickFunction(View view) throws IOException {
+        if (btn_function_step == 1) {
+            if(BTinit()) {
+                if (BTconnect()) {
+                    deviceConnected = true;
+                    beginListenForData();
+                    textView.append("\n--> Connection Opened!\n");
+                    btn_function.setText("START");
+                    btn_function_step = 2;
+                } else {
+                    Toast.makeText(getApplicationContext(), "Unable to Connect!", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(getApplicationContext(), "Specific device is not found!", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else if (btn_function_step == 2) {
+            textView.append("\n--> Reading Started!\n");
+
+            final int[] minuteCount = {1};
+            final int MINUTES = 1;
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    String valuestr = data;
+                    data = "";
+                    if (!valuestr.equals("")) {
+                        String[] values = valuestr.split(",");
+                        String key = "minute" + minuteCount[0];
+                        List<Integer> intList = new ArrayList<Integer>();
+                        for(String numeric : values) {
+                            if(!numeric.equals("")) {
+                                intList.add(Integer.parseInt(numeric));
+                            }
+                        }
+                        parent.child(key).setValue(intList);
+                        minuteCount[0]++;
+
+                    } else {
+                        timer.cancel();
+                        return;
+                    }
+                }
+            }, 15000, 1000 * 15 * MINUTES);
+
+            parent.child("result2").child("0").setValue(4.6);
+
+            if (!running) {
+                chronometer.setBase(SystemClock.elapsedRealtime());
+                chronometer.start();
+                running = true;
+            }
+
+            btn_function.setText("STOP");
+            btn_function_step = 3;
+        }
+        else if (btn_function_step == 3) {
+            String string = "0";
+            string.concat("\n");
+            try {
+                outputStream.write(string.getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            textView.append("\n--> Reading Stopped!\n");
+
+            stopThread = true;
+
+            outputStream.close();
+            inputStream.close();
+            socket.close();
+
+            timer.cancel();
+
+            deviceConnected = false;
+
+            if (running) {
+                chronometer.stop();
+                running = false;
+            }
+
+            btn_function.setText("SHOW RESULT");
+            btn_function_step = 4;
+
+        }
+        else if (btn_function_step == 4) {
+            if (finalResult.equals("4.6")) {
+                textView.append("\n--> Waiting for the result...\n");
+            } else {
+                textView.append("\n--> Potassium Level : " + finalResult + "\n");
+                textViewResult.setText(finalResult);
+                btn_function.setEnabled(false);
+            }
+        }
     }
 }

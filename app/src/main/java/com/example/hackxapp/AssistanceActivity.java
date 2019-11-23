@@ -17,4 +17,9 @@ public class AssistanceActivity extends AppCompatActivity {
         super.onBackPressed();
         finish();
     }
+
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
 }
