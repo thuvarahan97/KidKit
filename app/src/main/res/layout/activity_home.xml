@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/drawer"
-    android:background="@drawable/grad_bg"
+    android:background="@color/black"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
     tools:context=".HomeActivity">
@@ -35,47 +35,67 @@
             android:fitsSystemWindows="true"
             android:orientation="vertical"
             android:paddingBottom="30dp"
-            android:paddingTop="100dp"
-            android:paddingLeft="30dp"
-            android:paddingRight="30dp">
+            android:paddingTop="55dp"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp">
 
-            <com.jjoe64.graphview.GraphView
-                android:layout_width="match_parent"
-                android:layout_height="300dip"
-                android:id="@+id/graph" />
-
-            <EditText
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/x_value"
-                android:ems="10"
-                android:layout_marginTop="20dp"
-                android:inputType="numberSigned"
-                android:textAlignment="center"
-                android:textSize="24dp"
-                android:background="@color/colorAccent"/>
+                android:layout_marginTop="30dp"
+                android:textColor="@color/white"
+                android:textSize="25dp"
+                android:text="Welcome!"
+                android:gravity="center"/>
 
-            <EditText
+            <com.synnapps.carouselview.CarouselView
+                android:id="@+id/carouselView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/y_value"
-                android:ems="10"
-                android:layout_marginTop="20dp"
-                android:inputType="numberSigned"
-                android:textAlignment="center"
-                android:textSize="24dp"
-                android:background="@color/colorAccent"/>
+                android:layout_height="300dp"
+                app:fillColor="#FFFFFFFF"
+                app:pageColor="#00000000"
+                app:radius="4dp"
+                app:indicatorMarginVertical="10dp"
+                app:pageTransformInterval="1000"
+                app:animateOnBoundary="true"
+                app:slideInterval="5000"
+                app:strokeColor="#FF777777"
+                android:layout_marginTop="50dp"
+                app:strokeWidth="1dp"/>
 
-            <Button
-                android:id="@+id/bInsert"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_gravity="center"
-                android:background="@drawable/btn_bg"
-                android:fontFamily="sans-serif-light"
-                android:text="Insert"
-                android:textColor="@color/white"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="bottom">
+
+                <ImageButton
+                    android:id="@+id/bProgress"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:layout_weight="1"
+                    android:background="@color/transparent"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/b_progress" />
+
+                <ImageButton
+                    android:id="@+id/bNewTask"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:layout_weight="1"
+                    android:background="@color/transparent"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/b_heart" />
+
+                <ImageButton
+                    android:id="@+id/bAssist"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:layout_weight="1"
+                    android:background="@color/transparent"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/b_assist" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -88,8 +108,8 @@
         android:id="@+id/design_navigation_view"
         android:background="@color/white"
         app:headerLayout="@layout/header"
-        app:itemIconTint="@color/colorPrimary"
-        app:itemTextColor="@color/colorPrimary"
+        app:itemIconTint="@color/black"
+        app:itemTextColor="@color/black"
         app:menu="@menu/drawermenu" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

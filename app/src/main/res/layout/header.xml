@@ -9,10 +9,13 @@
     android:paddingTop="50dp"
     android:paddingLeft="20dp">
 
-    <ImageView
-        android:src="@drawable/profile_photo"
+    <de.hdodenhof.circleimageview.CircleImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/profile_image_small"
         android:layout_width="75dp"
-        android:layout_height="75dp"/>
+        android:layout_height="75dp"
+        app:civ_border_width="2dp"
+        app:civ_border_color="#FFFFFFFF"/>
 
     <TextView
         android:id="@+id/user_name"

@@ -1,21 +1,22 @@
 package com.example.hackxapp;
 
 public class PointValue {
-    int xValue, yValue;
+    String xValue;
+    String yValue;
 
     public PointValue() {
     }
 
-    public PointValue(int xValue, int yValue) {
+    public PointValue(String xValue, String yValue) {
         this.xValue = xValue;
         this.yValue = yValue;
     }
 
-    public int getxValue() {
+    public String getxValue() {
         return xValue;
     }
 
-    public int getyValue() {
+    public String getyValue() {
         return yValue;
     }
 }

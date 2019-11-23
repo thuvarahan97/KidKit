@@ -2,18 +2,56 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/home"
-        android:title="Home"
-        android:icon="@drawable/ic_home_black_24dp"/>
-
-    <item
         android:id="@+id/profile"
         android:title="Profile"
         android:icon="@drawable/ic_person_black_24dp"/>
 
     <item
-        android:id="@+id/logout"
-        android:title="Logout"
-        android:icon="@drawable/ic_logout_black_24dp"/>
+        android:id="@+id/prevention"
+        android:title="Prevention"
+        android:icon="@drawable/ic_local_hospital_black_24dp"/>
+
+    <item
+        android:id="@+id/kidney_disease"
+        android:title="Kidney Disease"
+        android:icon="@drawable/ic_sentiment_dissatisfied_black_24dp"/>
+
+    <item
+        android:id="@+id/patients"
+        android:title="Patients"
+        android:icon="@drawable/ic_patient_black_24dp"/>
+
+    <item
+        android:id="@+id/organ"
+        android:title="Organ Donation"
+        android:icon="@drawable/ic_local_pharmacy_black_24dp"/>
+
+    <item
+        android:id="@+id/events"
+        android:title="Events"
+        android:icon="@drawable/ic_assignment_black_24dp"/>
+
+    <item
+        android:id="@+id/professionals"
+        android:title="Professionals"
+        android:icon="@drawable/ic_work_black_24dp"/>
+
+    <item
+        android:id="@+id/advocacy"
+        android:title="Advocacy"
+        android:icon="@drawable/ic_live_help_black_24dp"/>
+
+    <item
+        android:id="@+id/donate"
+        android:title="Donate"
+        android:icon="@drawable/ic_invert_colors_black_24dp"/>
+
+    <group
+        android:id="@+id/menu_bottom">
+        <item
+            android:id="@+id/logout"
+            android:title="Logout"
+            android:icon="@drawable/ic_logout_black_24dp"/>
+    </group>
 
 </menu>
