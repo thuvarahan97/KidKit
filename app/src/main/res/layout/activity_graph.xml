@@ -22,54 +22,6 @@
         android:textSize="50dp"
         android:textColor="@color/black"/>
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Connect"
-        android:id="@+id/buttonStart"
-        android:textSize="18sp"
-        android:visibility="gone"
-        android:textColor="@color/colorPrimary"
-        android:background="@drawable/btn_bg_1"
-        android:layout_marginTop="40dp"
-        android:onClick="onClickStart"/>
-
-    <Button
-        android:layout_marginTop="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Start"
-        android:textSize="18sp"
-        android:visibility="gone"
-        android:textColor="@color/colorPrimary"
-        android:background="@drawable/btn_bg_1"
-        android:id="@+id/buttonSend"
-        android:onClick="onClickSend"/>
-
-    <Button
-        android:layout_marginTop="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Stop"
-        android:textSize="18sp"
-        android:visibility="gone"
-        android:textColor="@color/colorPrimary"
-        android:background="@drawable/btn_bg_1"
-        android:id="@+id/buttonStop"
-        android:onClick="onClickStop"/>
-
-    <Button
-        android:id="@+id/buttonResult"
-        android:layout_marginTop="20dp"
-        android:textSize="18sp"
-        android:visibility="gone"
-        android:textColor="@color/colorPrimary"
-        android:background="@drawable/btn_bg_1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="onClickResult"
-        android:text="Result" />
-
     <LinearLayout
         android:layout_marginTop="40dp"
         android:layout_width="match_parent"

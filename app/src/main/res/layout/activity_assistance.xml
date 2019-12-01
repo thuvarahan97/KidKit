@@ -14,70 +14,11 @@
     android:gravity="center"
     tools:context=".AssistanceActivity">
 
-    <Button
-        android:id="@+id/bDoctor"
+    <TextView
+        android:id="@+id/tvHelp"
+        android:textColor="@color/black"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:background="@drawable/btn_bg_1"
-        android:text="DOCTOR"
-        android:textColor="@color/colorPrimary"
-        android:layout_marginTop="0dp"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center"/>
-
-    <Button
-        android:id="@+id/bConsultant"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:background="@drawable/btn_bg_1"
-        android:text="CONSULTANT"
-        android:textColor="@color/colorPrimary"
-        android:layout_marginTop="20dp"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center"/>
-
-    <Button
-        android:id="@+id/bForum"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:background="@drawable/btn_bg_1"
-        android:text="FORUM"
-        android:textColor="@color/colorPrimary"
-        android:layout_marginTop="20dp"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center"/>
-
-    <Button
-        android:id="@+id/bCommunity"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:background="@drawable/btn_bg_1"
-        android:text="COMMUNITY"
-        android:textColor="@color/colorPrimary"
-        android:layout_marginTop="20dp"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center"/>
-
-    <Button
-        android:id="@+id/bChatBot"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:background="@drawable/btn_bg_1"
-        android:text="CHAT BOT"
-        android:textColor="@color/colorPrimary"
-        android:layout_marginTop="20dp"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center"/>
-
-    <Button
-        android:id="@+id/bPublic"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:background="@drawable/btn_bg_1"
-        android:text="PUBLIC - HOW I FEEL"
-        android:textColor="@color/colorPrimary"
-        android:layout_marginTop="20dp"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center"/>
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"/>
 
 </LinearLayout>

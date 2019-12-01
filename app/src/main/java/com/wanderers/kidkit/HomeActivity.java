@@ -82,8 +82,8 @@ public class HomeActivity extends AppCompatActivity{
         bProgress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Intent progressIntent = new Intent(HomeActivity.this, AssistanceActivity.class);
-//                startActivity(progressIntent);
+                Intent progressIntent = new Intent(HomeActivity.this, ProgressActivity.class);
+                startActivity(progressIntent);
             }
         });
 
@@ -145,7 +145,7 @@ public class HomeActivity extends AppCompatActivity{
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Picasso.get().load(R.drawable.profile_pic_default).into(profile_image_small);
-                        Toast.makeText(HomeActivity.this, "Error Viewing Profile Image!", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(HomeActivity.this, "Error Viewing Profile Image!", Toast.LENGTH_SHORT).show();
                     }
                 })
         {

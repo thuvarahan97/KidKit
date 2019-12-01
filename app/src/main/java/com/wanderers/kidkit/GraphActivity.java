@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
@@ -19,6 +20,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,11 +46,8 @@ public class GraphActivity extends AppCompatActivity {
     private BluetoothSocket socket;
     private OutputStream outputStream;
     private InputStream inputStream;
-    Button startButton, sendButton, stopButton, resultButton;
-    TextView textView;
-    TextView textViewResult;
+    TextView textView, textViewResult;
     boolean deviceConnected = false;
-    Thread thread;
     byte buffer[];
     boolean stopThread;
 
@@ -59,13 +58,15 @@ public class GraphActivity extends AppCompatActivity {
 
     String data = "";
 
-    Double finalResultDouble;
-    String finalResult;
+    String finalResult = "";
 
     Button btn_function;
     int btn_function_step;
 
-    String url = "http://13.76.155.34:5000/ecgData";    // Azure Server URL
+    String SERVER_URL = "http://13.76.155.34:5000/ecgData";    // Azure Server URL
+    String RESULT_URL = "https://cardioapp.000webhostapp.com/add_result.php";
+
+    String user_id ="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,42 +76,28 @@ public class GraphActivity extends AppCompatActivity {
         sessionManager = new SessionManager(this);
         sessionManager.checkLogin();
 
-        startButton = (Button) findViewById(R.id.buttonStart);
-        sendButton = (Button) findViewById(R.id.buttonSend);
-        stopButton = (Button) findViewById(R.id.buttonStop);
-        resultButton = (Button) findViewById(R.id.buttonResult);
-        textView = (TextView) findViewById(R.id.textView);
-        textViewResult = (TextView) findViewById(R.id.textViewResult);
-        setUiEnabled(false);
+        textView = findViewById(R.id.textView);
+        textViewResult = findViewById(R.id.textViewResult);
 
         textView.setMovementMethod(new ScrollingMovementMethod());
         textView.setEnabled(true);
 
         HashMap<String, String> user = sessionManager.getUserDetail();
 
-        finalResult = "";
-        finalResultDouble = 4.83;
-
         chronometer = findViewById(R.id.chronometer);
 
         btn_function = findViewById(R.id.buttonFunction);
         btn_function_step = 1;
 
-    }
+        user_id = user.get(sessionManager.ID);
 
-    public void setUiEnabled(boolean bool) {
-        startButton.setEnabled(!bool);
-        sendButton.setEnabled(bool);
-        stopButton.setEnabled(bool);
-        resultButton.setEnabled(bool);
-        textView.setEnabled(bool);
     }
 
     public boolean BTinit() {
         boolean found = false;
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (bluetoothAdapter == null) {
-            Toast.makeText(getApplicationContext(), "Device does not Support Bluetooth", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Device doesn't support Bluetooth", Toast.LENGTH_SHORT).show();
         }
         if (!bluetoothAdapter.isEnabled()) {
             Intent enableAdapter = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -160,23 +147,6 @@ public class GraphActivity extends AppCompatActivity {
         return connected;
     }
 
-    public void onClickStart(View view) {
-        if(BTinit()) {
-            if (BTconnect()) {
-                startButton.setEnabled(false);
-                sendButton.setEnabled(true);
-                textView.setEnabled(true);
-                deviceConnected = true;
-                beginListenForData();
-                textView.append("\n--> Connection Opened!\n");
-            } else {
-                Toast.makeText(getApplicationContext(), "Unable to Connect!", Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            Toast.makeText(getApplicationContext(), "Specific device is not found!", Toast.LENGTH_SHORT).show();
-        }
-    }
-
     void beginListenForData() {
         final Handler handler = new Handler();
         stopThread = false;
@@ -193,8 +163,6 @@ public class GraphActivity extends AppCompatActivity {
                             handler.post(new Runnable() {
                                 public void run() {
                                     data = data + string;
-
-
                                 }
                             });
                         }
@@ -206,91 +174,6 @@ public class GraphActivity extends AppCompatActivity {
         });
         thread.start();
     }
-
-    public void onClickSend(View view) {
-        textView.append("\n--> Reading Started!\n");
-
-        sendButton.setEnabled(false);
-        stopButton.setEnabled(true);
-
-        final int[] minuteCount = {1};
-        final int MINUTES = 1;
-
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                String valuestr = data;
-                data = "";
-                if (!valuestr.equals("")) {
-                    String[] values = valuestr.split(",");
-
-                    String key = "minute" + minuteCount[0];
-
-                    List<Integer> intList = new ArrayList<Integer>();
-                    for(String numeric : values) {
-                        if(!numeric.equals("")) {
-                            intList.add(Integer.parseInt(numeric));
-                        }
-                    }
-
-                    minuteCount[0]++;
-
-                } else {
-                    timer.cancel();
-                    return;
-                }
-
-            }
-        }, 15000, 1000 * 15 * MINUTES);
-        // 1000 milliseconds in a second * 60 per minute * the MINUTES variable.
-
-        if (!running) {
-            chronometer.setBase(SystemClock.elapsedRealtime());
-            chronometer.start();
-            running = true;
-        }
-
-    }
-
-    public void onClickStop(View view) throws IOException {
-        String string = "0";
-        string.concat("\n");
-        try {
-            outputStream.write(string.getBytes());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        textView.append("\n--> Reading Stopped!\n");
-
-        stopThread = true;
-
-        outputStream.close();
-        inputStream.close();
-        socket.close();
-
-        timer.cancel();
-
-        stopButton.setEnabled(false);
-        resultButton.setEnabled(true);
-        deviceConnected = false;
-
-        if (running) {
-            chronometer.stop();
-            running = false;
-        }
-
-    }
-
-    public void onClickResult(View view) {
-        if (finalResult.equals("0")) {
-            textView.append("\n--> Waiting for the results...\n");
-        } else {
-            textView.append("\nPotassium Level : " + finalResult + "\n");
-            textViewResult.setText(finalResult);
-            resultButton.setEnabled(false);
-        }
-    }
-
 
     @Override
     public void onBackPressed() {
@@ -322,32 +205,6 @@ public class GraphActivity extends AppCompatActivity {
         else if (btn_function_step == 2) {
             textView.append("\n--> Reading Started!\n");
 
-            final int[] minuteCount = {1};
-            final int MINUTES = 1;
-            timer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    String valuestr = data;
-                    data = "";
-                    if (!valuestr.equals("")) {
-                        String[] values = valuestr.split(",");
-                        String key = "minute" + minuteCount[0];
-                        List<Integer> intList = new ArrayList<Integer>();
-                        for(String numeric : values) {
-                            if(!numeric.equals("")) {
-                                intList.add(Integer.parseInt(numeric));
-                            }
-                        }
-
-                        minuteCount[0]++;
-
-                    } else {
-                        timer.cancel();
-                        return;
-                    }
-                }
-            }, 15000, 1000 * 15 * MINUTES);
-
             if (!running) {
                 chronometer.setBase(SystemClock.elapsedRealtime());
                 chronometer.start();
@@ -358,13 +215,7 @@ public class GraphActivity extends AppCompatActivity {
             btn_function_step = 3;
         }
         else if (btn_function_step == 3) {
-            String string = "0";
-            string.concat("\n");
-            try {
-                outputStream.write(string.getBytes());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+
             textView.append("\n--> Reading Stopped!\n");
 
             stopThread = true;
@@ -373,13 +224,33 @@ public class GraphActivity extends AppCompatActivity {
             inputStream.close();
             socket.close();
 
-            timer.cancel();
-
             deviceConnected = false;
 
             if (running) {
                 chronometer.stop();
                 running = false;
+            }
+            if (!data.equals("")) {
+                String[] values = data.split(",");
+                Map<String, String> data_map = new HashMap<String, String>();
+                int i = 0;
+                for(String numeric : values) {
+                    if(!numeric.equals("")) {
+                        data_map.put(String.valueOf(i),numeric);
+                        i++;
+                    }
+                }
+
+                sendDataToServer(SERVER_URL, data_map, new VolleyCallBack() {
+                    @Override
+                    public void onSuccess(JSONObject object) {
+                        try {
+                            finalResult = object.getString("K_level");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
             }
 
             btn_function.setText("SHOW RESULT");
@@ -388,17 +259,25 @@ public class GraphActivity extends AppCompatActivity {
         }
         else if (btn_function_step == 4) {
 
-                textView.append("\n--> Potassium Level : " + finalResult + "\n");
-                textViewResult.setText(finalResult);
+            if (!finalResult.equals("")){
+                double k_level = Double.parseDouble(finalResult);
+                String k_level_final = String.format("%.2f", k_level);
+                textView.append("\n--> Potassium Level : " + k_level_final + "\n");
+                textViewResult.setText(k_level_final);
                 btn_function.setEnabled(false);
+
+                sendResultToDatabase(RESULT_URL, k_level_final);
+
+            } else {
+                Toast.makeText(this, "Waiting for the results!", Toast.LENGTH_SHORT).show();
+            }
 
         }
     }
 
 
-    public String postData(String url, Map<String,String> data){
+    public void sendDataToServer(String url, Map<String,String> data, final VolleyCallBack callBack){
 
-        final String[] result = {""};
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 
@@ -407,7 +286,10 @@ public class GraphActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            result[0] = response.getString("K_level");
+                            finalResult = response.getString("K_level");
+
+                            callBack.onSuccess(response);
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -416,13 +298,43 @@ public class GraphActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(GraphActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+                        error.printStackTrace();
                     }
                 }
         ){
             //here I want to post data to sever
         };
         requestQueue.add(jsonObj);
-        return result[0];
     }
+
+
+    public void sendResultToDatabase(String url, final String data){
+
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    //Code
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(GraphActivity.this, "Unable to save the result!", Toast.LENGTH_SHORT).show();
+                }
+            }) {
+            protected Map<String, String> getParams() {
+                Map<String, String> postData = new HashMap<String, String>();
+                postData.put("result", data);
+                postData.put("id", user_id);
+
+                return postData;
+            }
+        };
+        requestQueue.add(stringRequest);
+    }
+
+
 }
