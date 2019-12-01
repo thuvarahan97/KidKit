@@ -134,7 +134,7 @@ public class GraphActivity extends AppCompatActivity {
         parent.removeValue();
 
         finalResult = "";
-        finalResultDouble = 4.6;
+        finalResultDouble = 4.83;
 
         chronometer = findViewById(R.id.chronometer);
 
@@ -514,7 +514,7 @@ public class GraphActivity extends AppCompatActivity {
                 }
             }, 15000, 1000 * 15 * MINUTES);
 
-            parent.child("result2").child("0").setValue(4.6);
+            parent.child("result2").child("0").setValue(4.83);
 
             if (!running) {
                 chronometer.setBase(SystemClock.elapsedRealtime());
@@ -555,13 +555,11 @@ public class GraphActivity extends AppCompatActivity {
 
         }
         else if (btn_function_step == 4) {
-            if (finalResult.equals("4.6")) {
-                textView.append("\n--> Waiting for the result...\n");
-            } else {
+
                 textView.append("\n--> Potassium Level : " + finalResult + "\n");
                 textViewResult.setText(finalResult);
                 btn_function.setEnabled(false);
-            }
+
         }
     }
 }

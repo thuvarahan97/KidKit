@@ -120,19 +120,19 @@
                         android:paddingRight="15dp"
                         android:textColor="@color/colorPrimary"/>
 
-                    <EditText
-                        android:id="@+id/etAge"
-                        android:layout_width="match_parent"
-                        android:layout_height="45dp"
-                        android:layout_marginTop="15dp"
-                        android:background="@drawable/et_bg_1"
-                        android:fontFamily="sans-serif-light"
-                        android:hint="Age"
-                        android:inputType="number"
-                        android:paddingLeft="15dp"
-                        android:paddingRight="15dp"
-                        android:textColor="@color/colorPrimary"
-                        android:textColorHint="@color/colorPrimary"/>
+<!--                    <EditText-->
+<!--                        android:id="@+id/etAge"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="45dp"-->
+<!--                        android:layout_marginTop="15dp"-->
+<!--                        android:background="@drawable/et_bg_1"-->
+<!--                        android:fontFamily="sans-serif-light"-->
+<!--                        android:hint="Age"-->
+<!--                        android:inputType="number"-->
+<!--                        android:paddingLeft="15dp"-->
+<!--                        android:paddingRight="15dp"-->
+<!--                        android:textColor="@color/colorPrimary"-->
+<!--                        android:textColorHint="@color/colorPrimary"/>-->
 
     <!--                <Spinner-->
     <!--                    android:id="@+id/spDistrict"-->
@@ -144,20 +144,20 @@
     <!--                    android:paddingRight="15dp"-->
     <!--                    android:textColor="@color/black"/>-->
 
-                    <EditText
-                        android:id="@+id/etTelephone"
-                        android:layout_width="match_parent"
-                        android:layout_height="45dp"
-                        android:layout_marginTop="15dp"
-                        android:background="@drawable/et_bg_1"
-                        android:fontFamily="sans-serif-light"
-                        android:hint="Telephone"
-                        android:inputType="phone"
-                        android:digits="0123456789+"
-                        android:paddingLeft="15dp"
-                        android:paddingRight="15dp"
-                        android:textColor="@color/colorPrimary"
-                        android:textColorHint="@color/colorPrimary"/>
+<!--                    <EditText-->
+<!--                        android:id="@+id/etTelephone"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="45dp"-->
+<!--                        android:layout_marginTop="15dp"-->
+<!--                        android:background="@drawable/et_bg_1"-->
+<!--                        android:fontFamily="sans-serif-light"-->
+<!--                        android:hint="Telephone"-->
+<!--                        android:inputType="phone"-->
+<!--                        android:digits="0123456789+"-->
+<!--                        android:paddingLeft="15dp"-->
+<!--                        android:paddingRight="15dp"-->
+<!--                        android:textColor="@color/colorPrimary"-->
+<!--                        android:textColorHint="@color/colorPrimary"/>-->
 
 
                     <EditText

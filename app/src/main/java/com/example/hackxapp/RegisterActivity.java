@@ -51,23 +51,23 @@ public class RegisterActivity extends AppCompatActivity implements Validator.Val
 
     Spinner spGender;
 
-    @NotEmpty
-    @Min(value = 1, message = "Should be greater than 1")
-    @Or
-    @Max(value = 150, message = "Should be less than 150")
-    EditText etAge;
+//    @NotEmpty
+//    @Min(value = 1, message = "Should be greater than 1")
+//    @Or
+//    @Max(value = 150, message = "Should be less than 150")
+//    EditText etAge;
 
 //    Spinner spDistrict;
 
-    @NotEmpty
-    EditText etTelephone;
+//    @NotEmpty
+//    EditText etTelephone;
 
     @NotEmpty
     @Email
     EditText etEmail;
 
     @NotEmpty
-    @Password(min = 6, scheme = Password.Scheme.ALPHA_NUMERIC_MIXED_CASE_SYMBOLS)
+    @Password(min = 6, scheme = Password.Scheme.ALPHA_NUMERIC_MIXED_CASE_SYMBOLS, message = "Password should contain at least one uppercase letter, one lower case letter, a symbol and a number (6 characters minimum)")
     EditText etPassword;
 
     @NotEmpty
@@ -94,9 +94,9 @@ public class RegisterActivity extends AppCompatActivity implements Validator.Val
         etFirstName = findViewById(R.id.etFirstName);
         etLastName = findViewById(R.id.etLastName);
         spGender = findViewById(R.id.spGender);
-        etAge = findViewById(R.id.etAge);
+//        etAge = findViewById(R.id.etAge);
 //        spDistrict = findViewById(R.id.spDistrict);
-        etTelephone = findViewById(R.id.etTelephone);
+//        etTelephone = findViewById(R.id.etTelephone);
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
         etCPassword = findViewById(R.id.etCPassword);
@@ -162,19 +162,16 @@ public class RegisterActivity extends AppCompatActivity implements Validator.Val
     @Override
     public void onValidationSucceeded() {
 //        final String nic = etNic.getText().toString();
-        final String nic = "";
         final String firstname = etFirstName.getText().toString();
         final String lastname = etLastName.getText().toString();
         final String gender = genderName;
-        final String age = etAge.getText().toString();
+//        final String age = etAge.getText().toString();
 //        final String district = districtName;
-        final String district = "";
-        final String telephone = etTelephone.getText().toString();
+//        final String telephone = etTelephone.getText().toString();
         final String email = etEmail.getText().toString();
         final String password = etPassword.getText().toString();
         final String c_password = etCPassword.getText().toString();
 //        final String code = etVerification.getText().toString();
-        final String code = "";
 
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
@@ -182,20 +179,23 @@ public class RegisterActivity extends AppCompatActivity implements Validator.Val
                 try {
                     JSONObject jsonResponse = new JSONObject(response);
                     String success = jsonResponse.getString("success");
+                    String method = "register";
 
                     switch (success) {
                         case "1":
-                            Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            String id = jsonResponse.getString("id").trim();
+
+                            Intent intent = new Intent(RegisterActivity.this, VerificationActivity.class);
+                            intent.putExtra("id", id);
+                            intent.putExtra("method", method);
                             RegisterActivity.this.startActivity(intent);
-                            Toast.makeText(RegisterActivity.this,"Successfully Registered!",Toast.LENGTH_SHORT).show();
+                            RegisterActivity.this.finish();
                             break;
                         case "3":
                             Toast.makeText(RegisterActivity.this, "Passwords don't match!", Toast.LENGTH_SHORT).show();
                             break;
                         case "4":
-                            Toast.makeText(RegisterActivity.this, "A user with given NIC already exists!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterActivity.this, "User already exists!", Toast.LENGTH_SHORT).show();
                             break;
                         default:
                             AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
@@ -212,7 +212,8 @@ public class RegisterActivity extends AppCompatActivity implements Validator.Val
             }
         };
 
-        RegisterRequest registerRequest = new RegisterRequest(nic, firstname, lastname, gender, age, district, telephone, email, password, c_password, code, responseListener);
+//        RegisterRequest registerRequest = new RegisterRequest(nic, firstname, lastname, gender, age, district, telephone, email, password, c_password, code, responseListener);
+        RegisterRequest registerRequest = new RegisterRequest(firstname, lastname, gender, email, password, c_password, responseListener);
         RequestQueue queue = Volley.newRequestQueue(RegisterActivity.this);
         queue.add(registerRequest);
     }

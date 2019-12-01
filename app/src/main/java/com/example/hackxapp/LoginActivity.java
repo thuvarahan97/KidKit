@@ -34,7 +34,7 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
     Validator validator;
 
     @NotEmpty
-    private EditText etNic;
+    private EditText etEmail;
 
     @NotEmpty
     private EditText etPassword;
@@ -54,7 +54,7 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
 
         mPrefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
 
-        etNic = findViewById(R.id.etNic);
+        etEmail = findViewById(R.id.etEmail);
 
         etPassword = findViewById(R.id.etPassword);
 
@@ -80,9 +80,9 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
         });
 
         SharedPreferences sp = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        if (sp.contains("pref_nic")) {
-            String u = sp.getString("pref_nic", "not found.");
-            etNic.setText(u.toString());
+        if (sp.contains("pref_email")) {
+            String u = sp.getString("pref_email", "not found.");
+            etEmail.setText(u.toString());
         }
         if (sp.contains("pref_pass")) {
             String p = sp.getString("pref_pass", "not found.");
@@ -113,7 +113,7 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
 
     @Override
     public void onValidationSucceeded() {
-        final String nic = etNic.getText().toString();
+        final String email = etEmail.getText().toString();
         final String password = etPassword.getText().toString();
 
         Response.Listener<String> responseListener = new Response.Listener<String>() {
@@ -124,16 +124,17 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
 
                     switch (success) {
                         case "1": {
-                            String name = jsonResponse.getString("name").trim();
+                            String firstname = jsonResponse.getString("firstname").trim();
+                            String lastname = jsonResponse.getString("lastname").trim();
                             String email = jsonResponse.getString("email").trim();
                             String id = jsonResponse.getString("id").trim();
 
-                            sessionManager.createSession(name, email, id);
+                            sessionManager.createSession(firstname, lastname, email, id);
 
                             if (mCheckBoxRememberMe.isChecked()) {
                                 Boolean boolIsChecked = mCheckBoxRememberMe.isChecked();
                                 SharedPreferences.Editor editor = mPrefs.edit();
-                                editor.putString("pref_nic", nic);
+                                editor.putString("pref_email", email);
                                 editor.putString("pref_pass", password);
                                 editor.putBoolean("pref_check", boolIsChecked);
                                 editor.apply();
@@ -143,7 +144,8 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
                             }
 
                             Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-                            intent.putExtra("name", name);
+                            intent.putExtra("firstname", firstname);
+                            intent.putExtra("lastname", lastname);
                             intent.putExtra("email", email);
 
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -159,6 +161,7 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
                                     .setNegativeButton("Retry", null)
                                     .create()
                                     .show();
+                            etPassword.setText("");
                             break;
                         }
                         case "3": {
@@ -167,6 +170,34 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
                                     .setNegativeButton("Retry", null)
                                     .create()
                                     .show();
+                            etEmail.setText("");
+                            etPassword.setText("");
+                            break;
+                        }
+                        case "4": {
+                            String firstname = jsonResponse.getString("firstname").trim();
+                            String lastname = jsonResponse.getString("lastname").trim();
+                            String email = jsonResponse.getString("email").trim();
+                            String id = jsonResponse.getString("id").trim();
+                            String method = "login";
+
+                            if (mCheckBoxRememberMe.isChecked()) {
+                                Boolean boolIsChecked = mCheckBoxRememberMe.isChecked();
+                                SharedPreferences.Editor editor = mPrefs.edit();
+                                editor.putString("pref_email", email);
+                                editor.putString("pref_pass", password);
+                                editor.putBoolean("pref_check", boolIsChecked);
+                                editor.apply();
+                                Toast.makeText(getApplicationContext(), "Settings have been saved.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                mPrefs.edit().clear().apply();
+                            }
+
+                            Intent intent = new Intent(LoginActivity.this, VerificationActivity.class);;
+                            intent.putExtra("id", id);
+                            intent.putExtra("method", method);
+
+                            LoginActivity.this.startActivity(intent);
                             break;
                         }
                         default: {
@@ -185,7 +216,7 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
             }
         };
 
-        LoginRequest loginRequest = new LoginRequest(nic, password, responseListener);
+        LoginRequest loginRequest = new LoginRequest(email, password, responseListener);
         RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
         queue.add(loginRequest);
     }

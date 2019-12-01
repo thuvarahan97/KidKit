@@ -25,6 +25,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -41,7 +43,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    private TextView name, email;
+    private TextView name, email, gender;
     private Button btn_photo_upload;
     private static final String TAG = ProfileActivity.class.getSimpleName();    //getting the info
     SessionManager sessionManager;
@@ -50,7 +52,7 @@ public class ProfileActivity extends AppCompatActivity {
     private static String URL_UPLOAD = "http://cardioapp.000webhostapp.com/upload.php";
     private Bitmap bitmap;
     CircleImageView profile_image;
-    String strImage;
+    String strImage = "";
     Button bLogout;
 
     @Override
@@ -67,6 +69,8 @@ public class ProfileActivity extends AppCompatActivity {
         profile_image = findViewById(R.id.profile_image);
         name = findViewById(R.id.name);
         email = findViewById(R.id.email);
+        gender = findViewById(R.id.gender);
+//        age = findViewById(R.id.age);
 
         bLogout = findViewById(R.id.bLogout);
 
@@ -106,37 +110,42 @@ public class ProfileActivity extends AppCompatActivity {
 
                                     JSONObject object = jsonArray.getJSONObject(i);
 
-                                    String strName = object.getString("firstname").trim();
+                                    String strFirstName = object.getString("firstname").trim();
+                                    String strLastName = object.getString("lastname").trim();
                                     String strEmail = object.getString("email").trim();
+                                    String strGender = object.getString("gender").trim();
+//                                    String strAge = object.getString("age").trim();
                                     strImage = object.getString("image").trim();
 
-                                    name.setText(strName);
+                                    name.setText(String.format("%s %s", strFirstName, strLastName));
                                     email.setText(strEmail);
+                                    gender.setText(strGender);
+//                                    age.setText(strAge);
                                 }
 
                                 try {
                                     if (strImage.equals("")) {
-                                        Picasso.get().load(R.drawable.profile_photo).into(profile_image);
+                                        Picasso.get().load(R.drawable.profile_pic_default).into(profile_image);
                                     } else {
                                         Picasso.get().load(strImage).into(profile_image);
                                     }
                                 } catch (Exception e) {
-                                    Picasso.get().load(R.drawable.profile_photo).into(profile_image);
+                                    Picasso.get().load(R.drawable.profile_pic_default).into(profile_image);
                                 }
 
                             } else {
-                                Picasso.get().load(R.drawable.profile_photo).into(profile_image);
+                                Picasso.get().load(R.drawable.profile_pic_default).into(profile_image);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            Picasso.get().load(R.drawable.profile_photo).into(profile_image);
+                            Picasso.get().load(R.drawable.profile_pic_default).into(profile_image);
                         }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Picasso.get().load(R.drawable.profile_photo).into(profile_image);
+                        Picasso.get().load(R.drawable.profile_pic_default).into(profile_image);
                         Toast.makeText(ProfileActivity.this, "Error Reading Detail!", Toast.LENGTH_SHORT).show();
                     }
                 })
@@ -179,12 +188,13 @@ public class ProfileActivity extends AppCompatActivity {
         if (requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null) {
             Uri filePath = data.getData();
             try {
+//                profile_image.setImageResource(0);
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
-                profile_image.setImageBitmap(bitmap);
+//                profile_image.setImageBitmap(bitmap);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            
+
             UploadPicture(getID, getStringImage(bitmap));
         }
     }
@@ -205,7 +215,11 @@ public class ProfileActivity extends AppCompatActivity {
                                 String success = jsonObject.getString("success");
 
                                 if (success.equals("1")){
-                                    getUserDetail();
+                                    if (strImage.equals("")) {
+                                        getUserDetail();
+                                    } else {
+                                        Picasso.get().load(strImage).memoryPolicy(MemoryPolicy.NO_CACHE).networkPolicy(NetworkPolicy.NO_CACHE).into(profile_image);
+                                    }
                                     Toast.makeText(ProfileActivity.this, "Successfully Uploaded!", Toast.LENGTH_SHORT).show();
                                 }
                             } catch (JSONException e) {

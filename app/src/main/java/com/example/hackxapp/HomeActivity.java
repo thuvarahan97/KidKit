@@ -46,6 +46,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ImageListener;
@@ -99,7 +101,8 @@ public class HomeActivity extends AppCompatActivity{
         sessionManager.checkLogin();
         
         HashMap<String, String> user = sessionManager.getUserDetail();
-        String mName = user.get(sessionManager.NAME);
+        String mFirstName = user.get(sessionManager.FIRSTNAME);
+        String mLasttName = user.get(sessionManager.LASTNAME);
         String mEmail = user.get(sessionManager.EMAIL);
         getID = user.get(sessionManager.ID);
 
@@ -119,7 +122,7 @@ public class HomeActivity extends AppCompatActivity{
         user_email = findViewById(R.id.user_email);
         profile_image_small = findViewById(R.id.profile_image_small);
 
-        user_name.setText(mName);
+        user_name.setText(mFirstName + " " + mLasttName);
         user_email.setText(mEmail);
 
 
@@ -235,27 +238,27 @@ public class HomeActivity extends AppCompatActivity{
                                 }
                                 try {
                                     if (strImage.equals("")) {
-                                        Picasso.get().load(R.drawable.profile_photo).into(profile_image_small);
+                                        Picasso.get().load(R.drawable.profile_pic_default).into(profile_image_small);
                                     } else {
                                         Picasso.get().load(strImage).into(profile_image_small);
                                     }
                                 } catch (Exception e) {
-                                    Picasso.get().load(R.drawable.profile_photo).into(profile_image_small);
+                                    Picasso.get().load(R.drawable.profile_pic_default).into(profile_image_small);
                                 }
 
                             } else {
-                                Picasso.get().load(R.drawable.profile_photo).into(profile_image_small);
+                                Picasso.get().load(R.drawable.profile_pic_default).into(profile_image_small);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            Picasso.get().load(R.drawable.profile_photo).into(profile_image_small);
+                            Picasso.get().load(R.drawable.profile_pic_default).into(profile_image_small);
                         }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Picasso.get().load(R.drawable.profile_photo).into(profile_image_small);
+                        Picasso.get().load(R.drawable.profile_pic_default).into(profile_image_small);
                         Toast.makeText(HomeActivity.this, "Error Viewing Profile Image!", Toast.LENGTH_SHORT).show();
                     }
                 })
