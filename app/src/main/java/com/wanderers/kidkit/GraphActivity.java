@@ -1,20 +1,23 @@
 package com.wanderers.kidkit;
 
-import androidx.appcompat.app.AppCompatActivity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -22,56 +25,47 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.UUID;
 
-public class GraphActivity extends AppCompatActivity {
+public class GraphActivity extends AppCompatActivity implements ConnectionReceiver.ConnectionReceiverListener {
 
-    SessionManager sessionManager;
-
-    private final String DEVICE_ADDRESS="00:18:E4:34:C7:14";
+    private final String DEVICE_ADDRESS = "00:18:E4:34:C7:14";
     private final UUID PORT_UUID = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");//Serial Port Service ID
-    private BluetoothDevice device;
-    private BluetoothSocket socket;
-    private OutputStream outputStream;
-    private InputStream inputStream;
+    SessionManager sessionManager;
     TextView textView, textViewResult;
     boolean deviceConnected = false;
     byte buffer[];
     boolean stopThread;
-
-    Timer timer = new Timer();
-
-    private Chronometer chronometer;
-    private boolean running;
-
     String data = "";
-
     String finalResult = "";
-
     Button btn_function;
     int btn_function_step;
-
     String SERVER_URL = "http://13.76.155.34:5000/ecgData";    // Azure Server URL
     String RESULT_URL = "https://cardioapp.000webhostapp.com/add_result.php";
-
-    String user_id ="";
+    String user_id = "";
+    private BluetoothDevice device;
+    private BluetoothSocket socket;
+    private OutputStream outputStream;
+    private InputStream inputStream;
+    private Chronometer chronometer;
+    private boolean running;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph);
+
+        checkConnection();
 
         sessionManager = new SessionManager(this);
         sessionManager.checkLogin();
@@ -151,7 +145,7 @@ public class GraphActivity extends AppCompatActivity {
         final Handler handler = new Handler();
         stopThread = false;
         buffer = new byte[1024];
-        Thread thread  = new Thread(new Runnable() {
+        Thread thread = new Thread(new Runnable() {
             public void run() {
                 while (!Thread.currentThread().isInterrupted() && !stopThread) {
                     try {
@@ -188,7 +182,7 @@ public class GraphActivity extends AppCompatActivity {
 
     public void onClickFunction(View view) throws IOException {
         if (btn_function_step == 1) {
-            if(BTinit()) {
+            if (BTinit()) {
                 if (BTconnect()) {
                     deviceConnected = true;
                     beginListenForData();
@@ -201,8 +195,7 @@ public class GraphActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(getApplicationContext(), "Specific device is not found!", Toast.LENGTH_SHORT).show();
             }
-        }
-        else if (btn_function_step == 2) {
+        } else if (btn_function_step == 2) {
             textView.append("\n--> Reading Started!\n");
 
             if (!running) {
@@ -213,8 +206,7 @@ public class GraphActivity extends AppCompatActivity {
 
             btn_function.setText("STOP");
             btn_function_step = 3;
-        }
-        else if (btn_function_step == 3) {
+        } else if (btn_function_step == 3) {
 
             textView.append("\n--> Reading Stopped!\n");
 
@@ -234,9 +226,9 @@ public class GraphActivity extends AppCompatActivity {
                 String[] values = data.split(",");
                 Map<String, String> data_map = new HashMap<String, String>();
                 int i = 0;
-                for(String numeric : values) {
-                    if(!numeric.equals("")) {
-                        data_map.put(String.valueOf(i),numeric);
+                for (String numeric : values) {
+                    if (!numeric.equals("")) {
+                        data_map.put(String.valueOf(i), numeric);
                         i++;
                     }
                 }
@@ -256,10 +248,9 @@ public class GraphActivity extends AppCompatActivity {
             btn_function.setText("SHOW RESULT");
             btn_function_step = 4;
 
-        }
-        else if (btn_function_step == 4) {
+        } else if (btn_function_step == 4) {
 
-            if (!finalResult.equals("")){
+            if (!finalResult.equals("")) {
                 double k_level = Double.parseDouble(finalResult);
                 String k_level_final = String.format("%.2f", k_level);
                 textView.append("\n--> Potassium Level : " + k_level_final + "\n");
@@ -276,12 +267,12 @@ public class GraphActivity extends AppCompatActivity {
     }
 
 
-    public void sendDataToServer(String url, Map<String,String> data, final VolleyCallBack callBack){
+    public void sendDataToServer(String url, Map<String, String> data, final VolleyCallBack callBack) {
 
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 
-        JsonObjectRequest jsonObj = new JsonObjectRequest(Request.Method.POST, url,new JSONObject(data),
+        JsonObjectRequest jsonObj = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(data),
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -301,30 +292,28 @@ public class GraphActivity extends AppCompatActivity {
                         error.printStackTrace();
                     }
                 }
-        ){
+        ) {
             //here I want to post data to sever
         };
         requestQueue.add(jsonObj);
     }
 
 
-    public void sendResultToDatabase(String url, final String data){
-
+    public void sendResultToDatabase(String url, final String data) {
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    //Code
-                }
-            },
-            new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(GraphActivity.this, "Unable to save the result!", Toast.LENGTH_SHORT).show();
-                }
-            }) {
+            @Override
+            public void onResponse(String response) {
+                //Code
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(GraphActivity.this, "Unable to save the result!", Toast.LENGTH_SHORT).show();
+            }
+        }) {
             protected Map<String, String> getParams() {
                 Map<String, String> postData = new HashMap<String, String>();
                 postData.put("result", data);
@@ -335,6 +324,56 @@ public class GraphActivity extends AppCompatActivity {
         };
         requestQueue.add(stringRequest);
     }
+
+    @Override
+    public void onNetworkConnectionChanged(boolean isConnected) {
+        if(!isConnected) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("No Internet Connection!")
+                    .setCancelable(false)
+                    .setNegativeButton("RETRY", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            finish();
+                            startActivity(getIntent());
+                        }
+                    })
+                    .create()
+                    .show();
+
+        }else{
+
+            finish();
+            startActivity(getIntent());
+
+        }
+    }
+
+    private void checkConnection() {
+        boolean isConnected = ConnectionReceiver.isConnected();
+        if(!isConnected) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("No Internet Connection!")
+                    .setCancelable(false)
+                    .setNegativeButton("RETRY", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            finish();
+                            startActivity(getIntent());
+                        }
+                    })
+                    .create()
+                    .show();
+
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        checkConnection();
+        KidKitApplication.getInstance().setConnectionListener(this);
+    }
+
 
 
 }

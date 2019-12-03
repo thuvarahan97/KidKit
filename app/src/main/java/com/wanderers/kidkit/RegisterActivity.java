@@ -1,12 +1,7 @@
 package com.wanderers.kidkit;
 
-import androidx.annotation.IntRange;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -16,6 +11,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
@@ -23,12 +21,8 @@ import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.ConfirmPassword;
 import com.mobsandgeeks.saripaar.annotation.Email;
-import com.mobsandgeeks.saripaar.annotation.Max;
-import com.mobsandgeeks.saripaar.annotation.Min;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
-import com.mobsandgeeks.saripaar.annotation.Or;
 import com.mobsandgeeks.saripaar.annotation.Password;
-import com.mobsandgeeks.saripaar.annotation.Pattern;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,34 +31,24 @@ import java.util.List;
 
 public class RegisterActivity extends AppCompatActivity implements Validator.ValidationListener {
 
-    private String genderName;
-
-
     @NotEmpty
     EditText etFirstName;
-
     @NotEmpty
     EditText etLastName;
-
     Spinner spGender;
-
     @NotEmpty
     @Email
     EditText etEmail;
-
     @NotEmpty
     @Password(min = 6, scheme = Password.Scheme.ALPHA_NUMERIC_MIXED_CASE_SYMBOLS, message = "Password should contain at least one uppercase letter, one lower case letter, a symbol and a number (6 characters minimum)")
     EditText etPassword;
-
     @NotEmpty
     @ConfirmPassword
     EditText etCPassword;
-
     Button bRegister;
-
-    private Validator validator;
-
     TextView loginLink;
+    private String genderName;
+    private Validator validator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +93,7 @@ public class RegisterActivity extends AppCompatActivity implements Validator.Val
             }
         });
 
-        loginLink.setOnClickListener(new View.OnClickListener(){
+        loginLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent loginIntent = new Intent(RegisterActivity.this, LoginActivity.class);

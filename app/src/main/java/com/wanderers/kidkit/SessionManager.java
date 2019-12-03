@@ -7,25 +7,24 @@ import android.content.SharedPreferences;
 import java.util.HashMap;
 
 public class SessionManager {
-    SharedPreferences sharedPreferences;
-    public SharedPreferences.Editor editor;
-    public Context context;
-    int PRIVATE_MODE = 0;
-
-    private static final String PREF_NAME = "LOGIN";
-    private static final String LOGIN = "IS_LOGIN";
     public static final String FIRSTNAME = "FIRSTNAME";
     public static final String LASTNAME = "LASTNAME";
     public static final String EMAIL = "EMAIL";
     public static final String ID = "ID";
+    private static final String PREF_NAME = "LOGIN";
+    private static final String LOGIN = "IS_LOGIN";
+    public SharedPreferences.Editor editor;
+    public Context context;
+    SharedPreferences sharedPreferences;
+    int PRIVATE_MODE = 0;
 
-    public SessionManager(Context context){
+    public SessionManager(Context context) {
         this.context = context;
         sharedPreferences = context.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
         editor = sharedPreferences.edit();
     }
 
-    public void createSession(String firstname, String lastname, String email, String id){
+    public void createSession(String firstname, String lastname, String email, String id) {
         editor.putBoolean(LOGIN, true);
         editor.putString(FIRSTNAME, firstname);
         editor.putString(LASTNAME, lastname);
@@ -34,12 +33,12 @@ public class SessionManager {
         editor.apply();
     }
 
-    public Boolean isLogin(){
+    public Boolean isLogin() {
         return sharedPreferences.getBoolean(LOGIN, false);
     }
 
-    public void checkLogin(){
-        if(!this.isLogin()){
+    public void checkLogin() {
+        if (!this.isLogin()) {
             Intent i = new Intent(context, LoginActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -47,7 +46,7 @@ public class SessionManager {
         }
     }
 
-    public HashMap<String, String> getUserDetail(){
+    public HashMap<String, String> getUserDetail() {
         HashMap<String, String> user = new HashMap<>();
         user.put(FIRSTNAME, sharedPreferences.getString(FIRSTNAME, null));
         user.put(LASTNAME, sharedPreferences.getString(LASTNAME, null));
@@ -57,7 +56,7 @@ public class SessionManager {
         return user;
     }
 
-    public void logout(){
+    public void logout() {
         editor.clear();
         editor.commit();
         Intent i = new Intent(context, LoginActivity.class);

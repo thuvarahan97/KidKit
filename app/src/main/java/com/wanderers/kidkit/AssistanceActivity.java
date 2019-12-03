@@ -1,10 +1,10 @@
 package com.wanderers.kidkit;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class AssistanceActivity extends AppCompatActivity {
 
@@ -34,10 +34,10 @@ public class AssistanceActivity extends AppCompatActivity {
                 "Right Leg- Green lead\n" +
                 "\n" +
                 "2.\tHome Screen consists of the tabs as follows:\n" +
-                        "• New Task:- Will begin a new task of Monitoring Blood potassium level.\n" +
-                        "• Progress:- Will show your progress related to blood potassium level.\n" +
-                        "• Help:- This is to support the user.\n" +
-                        "• Profile:- Will display your profile details.\n" +
+                "• New Task:- Will begin a new task of Monitoring Blood potassium level.\n" +
+                "• Progress:- Will show your progress related to blood potassium level.\n" +
+                "• Help:- This is to support the user.\n" +
+                "• Profile:- Will display your profile details.\n" +
                 "3.\tPress new task to begin a new blood potassium monitoring task. This will take you to following screen.\n" +
                 "\n" +
                 "4.\tPress “CONNECT” to connect your mobile device to KidKit hardware device through Bluetooth. (Make sure your Bluetooth is ON).\n" +

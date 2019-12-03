@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -26,82 +24,83 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:orientation="vertical"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:orientation="vertical">
 
                 <ImageView
-                    android:src="@drawable/kidkitlogonew"
                     android:layout_width="200dp"
                     android:layout_height="200dp"
                     android:layout_gravity="center"
-                    android:layout_marginTop="70dp"/>
+                    android:layout_marginTop="70dp"
+                    android:src="@drawable/kidkitlogonew" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginTop="15dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:layout_marginTop="15dp"
+                android:layout_weight="1"
                 android:focusableInTouchMode="true"
-                android:layout_weight="1">
+                android:orientation="vertical">
 
                 <EditText
                     android:id="@+id/etEmail"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
+                    android:background="@drawable/et_bg_1"
+                    android:drawableLeft="@drawable/ic_email_white_24dp"
+                    android:drawablePadding="10dp"
+                    android:drawableTint="@color/colorPrimary"
+                    android:fontFamily="sans-serif-light"
+                    android:foregroundTint="@color/colorPrimary"
                     android:hint="Email"
                     android:inputType="textEmailAddress"
-                    android:fontFamily="sans-serif-light"
-                    android:background="@drawable/et_bg_1"
-                    android:textColor="@color/colorPrimary"
-                    android:textColorHint="@color/colorPrimary"
-                    android:foregroundTint="@color/colorPrimary"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
-                    android:drawableLeft="@drawable/ic_email_white_24dp"
-                    android:drawableTint="@color/colorPrimary"
-                    android:drawablePadding="10dp"/>
+                    android:textColor="@color/colorPrimary"
+                    android:textColorHint="@color/colorPrimary" />
 
                 <EditText
                     android:id="@+id/etPassword"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:layout_marginTop="20dp"
+                    android:background="@drawable/et_bg_1"
+                    android:drawableLeft="@drawable/ic_lock_white_24dp"
+                    android:drawablePadding="10dp"
+                    android:drawableTint="@color/colorPrimary"
+                    android:fontFamily="sans-serif-light"
+                    android:foregroundTint="@color/colorPrimary"
                     android:hint="Password"
                     android:inputType="textPassword"
-                    android:fontFamily="sans-serif-light"
-                    android:textCursorDrawable="@null"
-                    android:background="@drawable/et_bg_1"
-                    android:textColor="@color/colorPrimary"
-                    android:textColorHint="@color/colorPrimary"
-                    android:foregroundTint="@color/colorPrimary"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
-                    android:drawableLeft="@drawable/ic_lock_white_24dp"
-                    android:drawableTint="@color/colorPrimary"
-                    android:drawablePadding="10dp"/>
+                    android:textColor="@color/colorPrimary"
+                    android:textColorHint="@color/colorPrimary"
+                    android:textCursorDrawable="@null" />
 
                 <CheckBox
                     android:id="@+id/checkBoxRememberMe"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Remember Me"
-                    android:textColor="@color/colorPrimary"
+                    android:layout_marginTop="20dp"
+                    android:backgroundTint="@color/white"
                     android:buttonTint="@color/colorPrimary"
                     android:foregroundTint="@color/white"
-                    android:backgroundTint="@color/white"
-                    android:layout_marginTop="20dp"/>
+                    android:text="Remember Me"
+                    android:textColor="@color/colorPrimary" />
 
                 <Button
                     android:id="@+id/bLogin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:text="LOGIN"
-                    android:textSize="18sp"
                     android:background="@drawable/btn_ripple_1"
-                    android:textColor="@color/white"/>
+                    android:text="LOGIN"
+                    android:textColor="@color/white"
+                    android:textSize="18sp" />
+
 
             </LinearLayout>
 
@@ -109,37 +108,34 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_weight="1"
                 android:layout_gravity="center|bottom"
+                android:layout_weight="1"
+                android:orientation="horizontal"
                 android:weightSum="2">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:layout_weight="1"
                     android:text="Don't have an account?"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="16sp"
-                    android:layout_weight="1"
-                    />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/tvRegisterHere"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="7dp"
                     android:layout_gravity="center"
+                    android:layout_marginLeft="7dp"
+                    android:layout_weight="1"
                     android:text="Sign Up"
                     android:textColor="@color/black"
-                    android:textSize="16sp"
-                    android:layout_weight="1"
-                    />
+                    android:textSize="16sp" />
 
             </LinearLayout>
 
         </LinearLayout>
-
 
 
     </FrameLayout>

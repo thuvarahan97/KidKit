@@ -12,8 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class SplashActivity extends AppCompatActivity {
 
-    private ImageView splash_logo;
     private static int splashTimeout = 1500;
+    private ImageView splash_logo;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

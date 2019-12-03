@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -26,78 +24,78 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:orientation="vertical"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:orientation="vertical">
 
                 <ImageView
-                    android:src="@drawable/kidkitlogonew"
                     android:layout_width="200dp"
                     android:layout_height="200dp"
                     android:layout_gravity="center"
-                    android:layout_marginTop="70dp"/>
+                    android:layout_marginTop="70dp"
+                    android:src="@drawable/kidkitlogonew" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
-                    android:layout_weight="1"
+                    android:layout_gravity="center"
                     android:layout_marginTop="20dp"
+                    android:layout_weight="1"
                     android:text="VERIFY YOUR ACCOUNT"
-                    android:textSize="25sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/colorPrimary"
                     android:textAlignment="center"
-                    android:layout_gravity="center"/>
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="25sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tvDescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:layout_weight="1"
                     android:layout_gravity="center"
-                    android:textSize="16sp"/>
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textSize="16sp" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginTop="15dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_gravity="center"
-                android:gravity="center">
+                android:layout_marginTop="15dp"
+                android:gravity="center"
+                android:orientation="vertical">
 
                 <EditText
                     android:id="@+id/etCode"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
-                    android:hint="Verification Code"
-                    android:inputType="numberDecimal"
-                    android:imeOptions="actionDone"
-                    android:digits="0123456789"
-                    android:importantForAutofill="no"
-                    android:maxLength="6"
-                    android:textAlignment="center"
-                    android:focusableInTouchMode="true"
-                    android:ellipsize="start"
-                    android:fontFamily="sans-serif-light"
                     android:background="@drawable/et_bg_1"
-                    android:textColor="@color/colorPrimary"
-                    android:textColorHint="@color/colorPrimary"
+                    android:digits="0123456789"
+                    android:ellipsize="start"
+                    android:focusableInTouchMode="true"
+                    android:fontFamily="sans-serif-light"
                     android:foregroundTint="@color/colorPrimary"
+                    android:gravity="center"
+                    android:hint="Verification Code"
+                    android:imeOptions="actionDone"
+                    android:importantForAutofill="no"
+                    android:inputType="numberDecimal"
+                    android:maxLength="6"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
-                    android:gravity="center"/>
+                    android:textAlignment="center"
+                    android:textColor="@color/colorPrimary"
+                    android:textColorHint="@color/colorPrimary" />
 
                 <Button
                     android:id="@+id/bVerify"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:text="VERIFY"
-                    android:textSize="18sp"
                     android:background="@drawable/btn_ripple_1"
-                    android:textColor="@color/white"/>
+                    android:text="VERIFY"
+                    android:textColor="@color/white"
+                    android:textSize="18sp" />
 
             </LinearLayout>
 

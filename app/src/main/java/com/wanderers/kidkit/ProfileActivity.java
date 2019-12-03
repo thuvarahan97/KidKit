@@ -1,9 +1,7 @@
 package com.wanderers.kidkit;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -13,10 +11,12 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -33,7 +33,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -41,24 +40,26 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity implements ConnectionReceiver.ConnectionReceiverListener {
 
-    private TextView name, email, gender;
-    private Button btn_photo_upload;
     private static final String TAG = ProfileActivity.class.getSimpleName();    //getting the info
-    SessionManager sessionManager;
-    String getID;
     private static String URL_READ = "http://cardioapp.000webhostapp.com/read_detail.php";
     private static String URL_UPLOAD = "http://cardioapp.000webhostapp.com/upload.php";
-    private Bitmap bitmap;
+    SessionManager sessionManager;
+    String getID;
     CircleImageView profile_image;
     String strImage = "";
     Button bLogout;
+    private TextView name, email, gender;
+    private Button btn_photo_upload;
+    private Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        checkConnection();
 
         sessionManager = new SessionManager(this);
         sessionManager.checkLogin();
@@ -85,18 +86,17 @@ public class ProfileActivity extends AppCompatActivity {
         bLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            sessionManager.logout();
-            Toast.makeText(ProfileActivity.this,"Successfully Logged Out!",Toast.LENGTH_SHORT).show();
+                sessionManager.logout();
+                Toast.makeText(ProfileActivity.this, "Successfully Logged Out!", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void getUserDetail(){
+    private void getUserDetail() {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_READ,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.i(TAG, response.toString());
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             String success = jsonObject.getString("success");
@@ -104,7 +104,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                             if (success.equals("1")) {
 
-                                for (int i=0; i < jsonArray.length(); i++) {
+                                for (int i = 0; i < jsonArray.length(); i++) {
 
                                     JSONObject object = jsonArray.getJSONObject(i);
 
@@ -142,10 +142,9 @@ public class ProfileActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Picasso.get().load(R.drawable.profile_pic_default).into(profile_image);
-                        Toast.makeText(ProfileActivity.this, "Error Reading Detail!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ProfileActivity.this, "Unable to read details!", Toast.LENGTH_SHORT).show();
                     }
-                })
-        {
+                }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
@@ -162,6 +161,8 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         getUserDetail();
+//        checkConnection();
+        KidKitApplication.getInstance().setConnectionListener(this);
     }
 
     public boolean onSupportNavigateUp() {
@@ -195,54 +196,53 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void UploadPicture(final String id, final String photo) {
         final ProgressDialog progressDialog = new ProgressDialog(this);
-            progressDialog.setMessage("Uploading...");
-            progressDialog.show();
+        progressDialog.setMessage("Uploading...");
+        progressDialog.show();
 
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_UPLOAD,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            progressDialog.dismiss();
-                            Log.i(TAG, response.toString());
-                            try {
-                                JSONObject jsonObject = new JSONObject(response);
-                                String success = jsonObject.getString("success");
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_UPLOAD,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        progressDialog.dismiss();
+                        Log.i(TAG, response.toString());
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            String success = jsonObject.getString("success");
 
-                                if (success.equals("1")){
-                                    if (strImage.equals("")) {
-                                        getUserDetail();
-                                    } else {
-                                        Picasso.get().load(strImage).memoryPolicy(MemoryPolicy.NO_CACHE).networkPolicy(NetworkPolicy.NO_CACHE).into(profile_image);
-                                    }
-                                    Toast.makeText(ProfileActivity.this, "Successfully Uploaded!", Toast.LENGTH_SHORT).show();
+                            if (success.equals("1")) {
+                                if (strImage.equals("")) {
+                                    getUserDetail();
+                                } else {
+                                    Picasso.get().load(strImage).memoryPolicy(MemoryPolicy.NO_CACHE).networkPolicy(NetworkPolicy.NO_CACHE).into(profile_image);
                                 }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                                progressDialog.dismiss();
-                                Toast.makeText(ProfileActivity.this, "Try Again!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ProfileActivity.this, "Successfully Uploaded!", Toast.LENGTH_SHORT).show();
                             }
-                        }
-                    },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                             progressDialog.dismiss();
                             Toast.makeText(ProfileActivity.this, "Try Again!", Toast.LENGTH_SHORT).show();
                         }
-                    })
-            {
-                @Override
-                protected Map<String, String> getParams() throws AuthFailureError {
-                    Map<String, String> params = new HashMap<>();
-                    params.put("id", id);
-                    params.put("photo", photo);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        progressDialog.dismiss();
+                        Toast.makeText(ProfileActivity.this, "Try Again!", Toast.LENGTH_SHORT).show();
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("id", id);
+                params.put("photo", photo);
 
-                    return params;
-                }
-            };
+                return params;
+            }
+        };
 
-            RequestQueue requestQueue = Volley.newRequestQueue(this);
-            requestQueue.add(stringRequest);
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
     }
 
     public String getStringImage(Bitmap bitmap) {
@@ -254,4 +254,49 @@ public class ProfileActivity extends AppCompatActivity {
 
         return encodedImage;
     }
+
+
+    @Override
+    public void onNetworkConnectionChanged(boolean isConnected) {
+        if(!isConnected) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("No Internet Connection!")
+                    .setCancelable(false)
+                    .setNegativeButton("RETRY", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            finish();
+                            startActivity(getIntent());
+                        }
+                    })
+                    .create()
+                    .show();
+
+        }else{
+
+            finish();
+            startActivity(getIntent());
+
+        }
+    }
+
+    private void checkConnection() {
+        boolean isConnected = ConnectionReceiver.isConnected();
+        if(!isConnected) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("No Internet Connection!")
+                    .setCancelable(false)
+                    .setNegativeButton("RETRY", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            finish();
+                            startActivity(getIntent());
+                        }
+                    })
+                    .create()
+                    .show();
+
+        }
+    }
+
+
 }

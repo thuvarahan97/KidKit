@@ -1,7 +1,10 @@
 package com.wanderers.kidkit;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,7 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class HomeActivity extends AppCompatActivity{
+public class HomeActivity extends AppCompatActivity implements ConnectionReceiver.ConnectionReceiverListener{
 
     SessionManager sessionManager;
     String getID;
@@ -44,6 +47,8 @@ public class HomeActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        checkConnection();
 
         sessionManager = new SessionManager(this);
         sessionManager.checkLogin();
@@ -164,7 +169,51 @@ public class HomeActivity extends AppCompatActivity{
     @Override
     protected void onResume() {
         super.onResume();
+        checkConnection();
+        KidKitApplication.getInstance().setConnectionListener(this);
         getUserDetail();
+    }
+
+    @Override
+    public void onNetworkConnectionChanged(boolean isConnected) {
+        if(!isConnected) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+            builder.setMessage("No Internet Connection!")
+                    .setCancelable(false)
+                    .setNegativeButton("RETRY", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            finish();
+                            startActivity(getIntent());
+                        }
+                    })
+                    .create()
+                    .show();
+
+        }else{
+
+            finish();
+            startActivity(getIntent());
+
+        }
+    }
+
+    private void checkConnection() {
+        boolean isConnected = ConnectionReceiver.isConnected();
+        if(!isConnected) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+            builder.setMessage("No Internet Connection!")
+                    .setCancelable(false)
+                    .setNegativeButton("RETRY", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            finish();
+                            startActivity(getIntent());
+                        }
+                    })
+                    .create()
+                    .show();
+
+        }
     }
 
 }
