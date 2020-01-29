@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">KidKit</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+    <string-array name="gender">
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
+</resources>
